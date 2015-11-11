@@ -43,7 +43,14 @@ var wizardWorkflowJSON = '{' +
 	         'x: 100,' +
 	         'y: 120,' +
 	         'proceed: "butn1"' +
-          '},{' + 
+         '},{' +
+	         'type: "step",' +
+	         'id: 2,' +
+	         'title: "Select Data Source Settings",' +
+	         'x: 500,' +
+	         'y: 120,' +
+	         'proceed: "butn2"' +
+	     '},{' + 
 	         'type: "step",' +
 	         'id: 3,' +
 	         'title: "Select Risk Management Menu",' +
@@ -61,7 +68,7 @@ var wizardtoast = function(wizardstep) {
 	var y = $(window).height()/2;
 	
 	// Configure steps complete
-	if (wizardstep !== null) { 
+	if (wizardstep !== undefined && wizardstep !== null) { 
 	    msg = wizardstep.title;
 	    x =  wizardstep.x;
 	    y =  wizardstep.y;
@@ -128,9 +135,13 @@ var wizardcurrentstep = -1;
 // Handle next step in the wizard
 var wizardnextstep = function() {
 	
-	wizardcurrentstep++;
-	var stepIdx = wizardflows[wizardflowselected].steps[wizardcurrentstep].step;
-	wizardtoast(getwizardstep(stepIdx));
+	wizardcurrentstep++;	
+	var nextstep = wizardflows[wizardflowselected].steps[wizardcurrentstep];
+	if (nextstep === undefined) {
+		wizardtoast(undefined);
+	} else {
+		wizardtoast(getwizardstep(nextstep.step));
+	}
 }
 
 // Intercept all mouse clicks on body element
