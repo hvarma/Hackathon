@@ -63,22 +63,18 @@ var wizardmenu = function(x, y, msg) {
 // Intercept all mouse clicks on body element
 $('body').on('click', function(event) {
 	
-	/*var rightclick;
-	var e = window.event;
-	if (e.which) rightclick = (e.which == 3);
-	else if (e.button) rightclick = (e.button == 2);
-	rightclick === true or false, you can trap right click here by if comparison
-	*/
-	
-	// prevent default action of the event from being triggered.
-	event.preventDefault();
-	  
-	// Custom click handler
-	var x = ($(window).width() - 284)/2;
-	var y = $(window).height()/2;
-	// TODO Workflow should be loaded from a JSON file which should include:
-	var msg = '<a href="url" onclick="wizardtoast(100, 120, \'Select Recording Management in the Menu\');">Configure Recorder</a></br><a href="url">Configure Archive</a></br><a href="url"  onclick="wizardtoast(100, 120, \'Select Risk Management in the Menu\');">Configure Biometrics</a>';
-	wizardmenu(x, y , msg);
+	// Display configuration work flow wizard if CTRL key is held during click
+	if (event.ctrlKey === true) {
+		// prevent default action of the event from being triggered.
+		event.preventDefault();
+		  
+		// Custom click handler
+		var x = ($(window).width() - 284)/2;
+		var y = $(window).height()/2;
+		// TODO Work flow should be loaded from a JSON file which should include:
+		var msg = '<a href="#" onclick="wizardtoast(100, 120, \'Select Recording Management in the Menu\');">Configure Recorder</a></br><a href="#">Configure Archive</a></br><a href="#" onclick="wizardtoast(100, 120, \'Select Risk Management in the Menu\');">Configure Biometrics</a>';
+		wizardmenu(x, y , msg);	
+	}
 });
 
 /*
