@@ -25,9 +25,9 @@
 // TODO Load work flow JSON from file, managing cross domain security issues.
 var wizardWorkflowJSON = '{' +
          'workflows: [{' +
-             'type: "menuitem",' +
+             'type: "menuitem",' +				// Configuration work flow menu item
              'title: "Configure Recorder",' +
-             'steps: [{step:1},{step:2}]'+
+             'steps: [{step:1},{step:2}]'+		// List of steps in the configuration work flow
          '},{' +
              'type: "menuitem",' +
              'title: "Configure Biometrics",' +
@@ -37,12 +37,12 @@ var wizardWorkflowJSON = '{' +
              'title: "Configure Archive",' +
 	         'steps: [{step:1},{step:2}]'+
          '},{' +
-	         'type: "step",' +
+	         'type: "step",' +			// Single Configuration step within a configuration work flow
 	         'id: 1,' +
 	         'title: "Select Recording Management Menu",' +
 	         'x: 100,' +
 	         'y: 120,' +
-	         'proceed: "butn1"' +
+	         'proceed: "butn1"' +		// Condition that must be met to proceed to next step in workflow
          '},{' +
 	         'type: "step",' +
 	         'id: 2,' +
@@ -171,15 +171,9 @@ $('body').on('click', function(event) {
  * TODO's
  * 
  * 1. Ensure that menu and toast are always displayed on top in WFO/AppShell
- * 2. Update click interceptor to obtains AppShell element id to be used in work flow.  
- * 3. Configuration work flows should be read from a JSON file instead of hard coded.
- *    JSON file should include:
- *    a) Work flow menu items
- *    b) Toast locations
- *    c) Toast text
- *    d) Expected AppShell element click required to move onto next step in work flow.
- *    
- * 4. Make the wizard menu and toast more beautiful.
- * 5. Choose a configuration work flow and add to work flow JSON file. 
+ * 2. Update click interceptor to obtains AppShell element id to be used in work flow. 
+ *    when work flow step 'proceed' condition is met, call wizardnextstep() 
+ * 3. Make the wizard menu and toast more beautiful.
+ * 4. Choose a configuration work flow and add to work flow JSON file. 
  * 
  */
