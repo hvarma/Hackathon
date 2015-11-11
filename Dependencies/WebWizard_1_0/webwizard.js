@@ -22,9 +22,40 @@
  * 3. Refresh your WFO browser to force it to reload your updated code.
  */
 
+// TODO Load work flow JSON from file, managing cross domain security issues.
+var wizardWorkflowJSON = '{' +
+         'workflows: [{' +
+             'type: "menuitem",' +
+             'title: "Configure Recorder",' +
+             'steps: [{step:1},{step:2}]'+
+         '},{' +
+             'type: "menuitem",' +
+             'title: "Configure Biometrics",' +
+	         'steps: [{step:3},{step:4}]'+
+         '},{' +
+             'type: "menuitem",' +
+             'title: "Configure Archive",' +
+	         'steps: [{step:1},{step:2}]'+
+         '},{' +
+	         'type: "step",' +
+	         'id: 1,' +
+	         'title: "Select Recording Management Menu",' +
+	         'x: 100,' +
+	         'y: 120,' +
+	         'proceed: "butn1"' +
+          '},{' + 
+	         'type: "step",' +
+	         'id: 3,' +
+	         'title: "Select Risk Management Menu",' +
+	         'x: 100,' +
+	         'y: 120,' +
+	         'proceed: "butn13"' +
+	      '}]' + 
+	  '}';
+
 // Show Wizard Toast Notification
-var wizardtoast = function(x, y, msg) {
-     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + msg + "</h3></div>")
+var wizardtoast = function(wizardstep) {
+     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + wizardstep.title + "</h3></div>")
      .css({ display: "block",
          background: "cyan",
          opacity: 0.90,
@@ -32,8 +63,8 @@ var wizardtoast = function(x, y, msg) {
          padding: "7px",
          "text-align": "center",
          width: "270px",
-         left: x,
-         top: y})
+         left: wizardstep.x,
+         top:wizardstep.y})
      .appendTo("body") // TODO Needs to be always on top. attach to document? or callback timer?
      .delay( 1500 ) 
      .fadeOut( 400, function(){
@@ -60,20 +91,56 @@ var wizardmenu = function(x, y, msg) {
      });
 }
 
+// Evaluate Configuration Work flows and Steps
+var wizardflows = eval(wizardWorkflowJSON);
+var wizardsteps = [];
+for (menuIdx in wizardflows) {
+    if (wizardflows[menuIdx].type === 'step') {
+    	wizardsteps.push(wizardflows[menuIdx]);
+    }
+}
+var getwizardstep = function(stepIdx) {
+	for (idx in wizardsteps) {
+		if (wizardsteps[idx].id === stepIdx) {
+			return wizardsteps[idx];
+		}
+	}
+	return null;
+}
+
+// Selected work flow and current step in the wizard
+var wizardflowselected = -1;
+var wizardcurrentstep = -1;
+
+var wizardmenuselected = function(menuIndex) {   
+	
+	wizardflowselected = menuIndex;
+	wizardcurrentstep = 0;
+	
+	var stepIdx = wizardflows[wizardflowselected].steps[wizardcurrentstep].step;
+	wizardtoast(getwizardstep(stepIdx));
+}
+
 // Intercept all mouse clicks on body element
 $('body').on('click', function(event) {
 	
 	// Display configuration work flow wizard if CTRL key is held during click
 	if (event.ctrlKey === true) {
-		// prevent default action of the event from being triggered.
+		
+		// Prevent default action of the event from being triggered.
 		event.preventDefault();
-		  
+		  		
 		// Custom click handler
 		var x = ($(window).width() - 284)/2;
 		var y = $(window).height()/2;
-		// TODO Work flow should be loaded from a JSON file which should include:
-		var msg = '<a href="#" onclick="wizardtoast(100, 120, \'Select Recording Management in the Menu\');">Configure Recorder</a></br><a href="#">Configure Archive</a></br><a href="#" onclick="wizardtoast(100, 120, \'Select Risk Management in the Menu\');">Configure Biometrics</a>';
-		wizardmenu(x, y , msg);	
+
+		var menu = '';
+		for (menuIdx in wizardflows) {
+		    if (wizardflows[menuIdx].type === 'menuitem') {
+		    	menu += '<a href="#" onclick="wizardmenuselected(' + menuIdx + ');">' + wizardflows[menuIdx].title  + '</a></br>';
+		    }
+		}
+		wizardmenu(x, y , menu);	
 	}
 });
 
