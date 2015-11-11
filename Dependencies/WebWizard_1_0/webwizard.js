@@ -55,26 +55,39 @@ var wizardWorkflowJSON = '{' +
 
 // Show Wizard Toast Notification
 var wizardtoast = function(wizardstep) {
-     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + wizardstep.title + "</h3></div>")
-     .css({ display: "block",
+
+    var msg = 'Configuration Complete';
+	var x = ($(window).width() - 284)/2;
+	var y = $(window).height()/2;
+	
+	// Configure steps complete
+	if (wizardstep !== null) { 
+	    msg = wizardstep.title;
+	    x =  wizardstep.x;
+	    y =  wizardstep.y;
+	}
+
+	// Display next configuration step
+    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' onclick='wizardnextstep();'><h3>" + msg + "</h3></div>")
+    .css({ display: "block",
          background: "cyan",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
          "text-align": "center",
          width: "270px",
-         left: wizardstep.x,
-         top:wizardstep.y})
-     .appendTo("body") // TODO Needs to be always on top. attach to document? or callback timer?
-     .delay( 1500 ) 
-     .fadeOut( 400, function(){
-         $(this).remove();
-     });
- }
+         left: x,
+         top: y})
+    .appendTo("body") // TODO Needs to be always on top. attach to document? or callback timer?
+    .delay( 3000 ) 
+    .fadeOut( 400, function(){
+        $(this).remove();
+    });
+}
 
 // Show Wizard menu
-var wizardmenu = function(x, y, msg) {
-     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + msg + "</h3></div>")
+var wizardmenu = function(x, y, menu) {
+     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + menu + "</h3></div>")
      .css({ display: "block",
          background: "yellow",
          opacity: 0.90,
@@ -112,11 +125,10 @@ var getwizardstep = function(stepIdx) {
 var wizardflowselected = -1;
 var wizardcurrentstep = -1;
 
-var wizardmenuselected = function(menuIndex) {   
+// Handle next step in the wizard
+var wizardnextstep = function() {
 	
-	wizardflowselected = menuIndex;
-	wizardcurrentstep = 0;
-	
+	wizardcurrentstep++;
 	var stepIdx = wizardflows[wizardflowselected].steps[wizardcurrentstep].step;
 	wizardtoast(getwizardstep(stepIdx));
 }
@@ -137,11 +149,11 @@ $('body').on('click', function(event) {
 		var menu = '';
 		for (menuIdx in wizardflows) {
 		    if (wizardflows[menuIdx].type === 'menuitem') {
-		    	menu += '<a href="#" onclick="wizardmenuselected(' + menuIdx + ');">' + wizardflows[menuIdx].title  + '</a></br>';
+		    	menu += '<a href="#" onclick="wizardflowselected=' + menuIdx + ';wizardcurrentstep=-1;wizardnextstep();">' + wizardflows[menuIdx].title  + '</a></br>';
 		    }
 		}
 		wizardmenu(x, y , menu);	
-	}
+	} 
 });
 
 /*
