@@ -27,11 +27,11 @@ var wizardflows = $.parseJSON('{' +
          '"workflows": [{' +
              '"type": "menuitem",' +				// Configuration work flow menu item
              '"title": "Configure Recorder",' +
-             '"steps": [{"step":1},{"step":2}]'+		// List of steps in the configuration work flow
+             '"steps": [{"step":3},{"step":4}]'+		// List of steps in the configuration work flow
          '},{' +
              '"type": "menuitem",' +
              '"title": "Configure Biometrics",' +
-	         '"steps": [{"step":3},{"step":4}]'+
+	         '"steps": [{"step":1},{"step":2}]'+
          '},{' +
              '"type": "menuitem",' +
              '"title": "Configure Archive",' +
@@ -39,7 +39,7 @@ var wizardflows = $.parseJSON('{' +
          '},{' +
 	         '"type": "step",' +			// Single Configuration step within a configuration work flow
 	         '"id": 1,' +
-	         '"title": "Select Recording Management Menu",' +
+	         '"title": "Select Risk Management Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
              '"proceed": {"type":"click","target":{"id": "toast"}}'+ // Condition that must be met to proceed to next step in work flow
@@ -53,9 +53,16 @@ var wizardflows = $.parseJSON('{' +
 	     '},{' + 
 	         '"type": "step",' +
 	         '"id": 3,' +
-	         '"title": "Select Risk Management Menu",' +
+	         '"title": "Select Recorder Management Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
+             '"proceed": {"type":"click","target":{"className": "as-navdrawer-img"}}'+
+    	 '},{' + 
+	         '"type": "step",' +
+	         '"id": 4,' +
+	         '"title": "Select Data Source",' +
+	         '"x": 500,' +
+	         '"y": 600,' +
              '"proceed": {"type":"click","target":{"id": "toast"}}'+
 	      '}]' + 
 	  '}');
@@ -178,10 +185,12 @@ $('body').on('click', function(event) {
 			var step = getwizardstep(getwizardflowstep().step);
 			if (event.type === step.proceed.type) {
 
+				if (console !== undefined) console.log(event);
+				
 				// Iterate target variables that need to be matched and check against event target properties
 				var match = true;
 				for (var name in step.proceed.target) {
-					if (event.target[name] === step.proceed.target[name]) {
+					if (event.target[name].indexOf(step.proceed.target[name]) > -1) {
 						match = true;
 					} else {
 						match = false;
