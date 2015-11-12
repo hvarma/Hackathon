@@ -207,9 +207,15 @@ $('body').on('click', function(event) {
 /*
  * TODO's
  * 
- * 1. Ensure that menu and toast are always displayed on top in WFO/AppShell
- * 2. Update click interceptor to obtain AppShell element id to be used in work flow. 
- *    when work flow step 'proceed' condition is met, call wizardnextstep() 
- * 3. Make the wizard menu and toast more beautiful.
- * 4. Choose a configuration work flow and add to work flow JSON file. 
+ * 1. Ensure that menu and toast are always displayed on top in WFO/AppShell, specifically the navigation menu
+ * 2. Make the wizard menu and toast more beautiful.
+ * 3. Choose a configuration work flow and add to work flow JSON file.
+ * 
+ * Additionally required for productization
+ * a. Encapsulate wizard code inside JavaScript object name space.
+ * b. Allow toast notification locations be to determined relative to target UI item. 
+ * c. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
+ * d. Update the code to read the JSON work flow configuration from the host web server. 
+ * e. Consider creating a UI for the creation of the JSON work flow configuration.
+ * f. Add additional configuration work flows.
  */
