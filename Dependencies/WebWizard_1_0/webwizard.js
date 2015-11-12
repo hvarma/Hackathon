@@ -23,42 +23,42 @@
  */
 
 // TODO Load work flow JSON from file, managing cross domain security issues.
-var wizardWorkflowJSON = '{' +
-         'workflows: [{' +
-             'type: "menuitem",' +				// Configuration work flow menu item
-             'title: "Configure Recorder",' +
-             'steps: [{step:1},{step:2}]'+		// List of steps in the configuration work flow
+var wizardflows = $.parseJSON('{' +
+         '"workflows": [{' +
+             '"type": "menuitem",' +				// Configuration work flow menu item
+             '"title": "Configure Recorder",' +
+             '"steps": [{"step":1},{"step":2}]'+		// List of steps in the configuration work flow
          '},{' +
-             'type: "menuitem",' +
-             'title: "Configure Biometrics",' +
-	         'steps: [{step:3},{step:4}]'+
+             '"type": "menuitem",' +
+             '"title": "Configure Biometrics",' +
+	         '"steps": [{"step":3},{"step":4}]'+
          '},{' +
-             'type: "menuitem",' +
-             'title: "Configure Archive",' +
-	         'steps: [{step:1},{step:2}]'+
+             '"type": "menuitem",' +
+             '"title": "Configure Archive",' +
+	         '"steps": [{"step":1},{"step":2}]'+
          '},{' +
-	         'type: "step",' +			// Single Configuration step within a configuration work flow
-	         'id: 1,' +
-	         'title: "Select Recording Management Menu",' +
-	         'x: 100,' +
-	         'y: 120,' +
-	         'proceed: "butn1"' +		// Condition that must be met to proceed to next step in workflow
+	         '"type": "step",' +			// Single Configuration step within a configuration work flow
+	         '"id": 1,' +
+	         '"title": "Select Recording Management Menu",' +
+	         '"x": 100,' +
+	         '"y": 120,' +
+	         '"proceed": "butn1"' +		// Condition that must be met to proceed to next step in work flow
          '},{' +
-	         'type: "step",' +
-	         'id: 2,' +
-	         'title: "Select Data Source Settings",' +
-	         'x: 500,' +
-	         'y: 120,' +
-	         'proceed: "butn2"' +
+	         '"type": "step",' +
+	         '"id": 2,' +
+	         '"title": "Select Data Source Settings",' +
+	         '"x": 500,' +
+	         '"y": 120,' +
+	         '"proceed": "butn2"' +
 	     '},{' + 
-	         'type: "step",' +
-	         'id: 3,' +
-	         'title: "Select Risk Management Menu",' +
-	         'x: 100,' +
-	         'y: 120,' +
-	         'proceed: "butn13"' +
+	         '"type": "step",' +
+	         '"id": 3,' +
+	         '"title": "Select Risk Management Menu",' +
+	         '"x": 100,' +
+	         '"y": 120,' +
+	         '"proceed": "butn13"' +
 	      '}]' + 
-	  '}';
+	  '}');
 
 // Show Wizard Toast Notification
 var wizardtoast = function(wizardstep) {
@@ -111,12 +111,11 @@ var wizardmenu = function(x, y, menu) {
      });
 }
 
-// Evaluate Configuration Work flows and Steps
-var wizardflows = eval(wizardWorkflowJSON);
+// Populate Work flows Steps
 var wizardsteps = [];
-for (menuIdx in wizardflows) {
-    if (wizardflows[menuIdx].type === 'step') {
-    	wizardsteps.push(wizardflows[menuIdx]);
+for (menuIdx in wizardflows.workflows) {
+    if (wizardflows.workflows[menuIdx].type === 'step') {
+    	wizardsteps.push(wizardflows.workflows[menuIdx]);
     }
 }
 var getwizardstep = function(stepIdx) {
@@ -136,7 +135,7 @@ var wizardcurrentstep = -1;
 var wizardnextstep = function() {
 	
 	wizardcurrentstep++;	
-	var nextstep = wizardflows[wizardflowselected].steps[wizardcurrentstep];
+	var nextstep = wizardflows.workflows[wizardflowselected].steps[wizardcurrentstep];
 	if (nextstep === undefined) {
 		wizardtoast(undefined);
 	} else {
@@ -158,9 +157,9 @@ $('body').on('click', function(event) {
 		var y = $(window).height()/2;
 
 		var menu = '';
-		for (menuIdx in wizardflows) {
-		    if (wizardflows[menuIdx].type === 'menuitem') {
-		    	menu += '<a href="#" onclick="wizardflowselected=' + menuIdx + ';wizardcurrentstep=-1;wizardnextstep();">' + wizardflows[menuIdx].title  + '</a></br>';
+		for (menuIdx in wizardflows.workflows) {
+		    if (wizardflows.workflows[menuIdx].type === 'menuitem') {
+		    	menu += '<a href="#" onclick="wizardflowselected=' + menuIdx + ';wizardcurrentstep=-1;wizardnextstep();">' + wizardflows.workflows[menuIdx].title  + '</a></br>';
 		    }
 		}
 		wizardmenu(x, y , menu);	
@@ -171,9 +170,8 @@ $('body').on('click', function(event) {
  * TODO's
  * 
  * 1. Ensure that menu and toast are always displayed on top in WFO/AppShell
- * 2. Update click interceptor to obtains AppShell element id to be used in work flow. 
+ * 2. Update click interceptor to obtain AppShell element id to be used in work flow. 
  *    when work flow step 'proceed' condition is met, call wizardnextstep() 
  * 3. Make the wizard menu and toast more beautiful.
  * 4. Choose a configuration work flow and add to work flow JSON file. 
- * 
  */
