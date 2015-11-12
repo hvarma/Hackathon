@@ -69,34 +69,43 @@ var wizardflows = $.parseJSON('{' +
 
 // Show Wizard Toast Notification
 var wizardtoast = function(wizardstep) {
-
-    var msg = 'Configuration Complete';
-	var x = ($(window).width() - 284)/2;
-	var y = $(window).height()/2;
 	
-	// Configure steps complete
-	if (wizardstep !== undefined && wizardstep !== null) { 
-	    msg = wizardstep.title;
-	    x =  wizardstep.x;
-	    y =  wizardstep.y;
-	}
-
 	// Display next configuration step
-    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3 id='toast'>" + msg + "</h3></div>")
+    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>" + wizardstep.title + "</h3></div>")
     .css({ display: "block",
          background: "cyan",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
          "text-align": "center",
+         "z-index": "19020",		// Higher that the WFO navigation bar of 19000 & 19020
          width: "270px",
-         left: x,
-         top: y})
-    .appendTo("body") // TODO Needs to be always on top. attach to document? or callback timer?
-    .delay( 3000 ) 
+         left: wizardstep.x,
+         top: wizardstep.y})
+    .appendTo("body");
+}
+
+// Show Wizard configuration flow complete Notification
+var wizardflowcomplete = function() {
+
+	// Display next configuration step
+    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>Configuration Complete</h3></div>")
+    .css({ display: "block",
+         background: "cyan",
+         opacity: 0.90,
+         position: "fixed",
+         padding: "7px",
+         "text-align": "center",
+         "z-index": "19020",		// Higher that the WFO navigation bar of 19000 & 19020
+         width: "270px",
+         left: ($(window).width() - 284)/2,
+         top: $(window).height()/2})
+    .appendTo("body")  // TODO Needs to be always on top. attach to document? or callback timer?
+    .delay( 1500 )
     .fadeOut( 400, function(){
         $(this).remove();
     });
+
 }
 
 // Show Wizard menu
@@ -148,10 +157,14 @@ var wizardcurrentstep = -1;
 // Handle next step in the wizard
 var wizardnextstep = function() {
 	
+	// Remove any existing displayed toast
+	$("#divtoast").remove();
+
+	// Move onto the next toast in the work flow
 	wizardcurrentstep++;	
 	var nextstep = getwizardflowstep();
 	if (nextstep === undefined) {
-		wizardtoast(undefined);
+		wizardflowcomplete();
 		wizardcurrentstep = -1;
 	} else {
 		wizardtoast(getwizardstep(nextstep.step));
