@@ -171,7 +171,7 @@ var wizardcurrentstep = -1;
 var wizardnextstep = function() {
 	
 	// Remove any existing displayed toast
-	$("#divtoast").remove();
+	$('#divtoast').remove();
 
 	// Move onto the next toast in the work flow
 	wizardcurrentstep++;	
@@ -184,8 +184,23 @@ var wizardnextstep = function() {
 	}
 }
 
-// Intercept all mouse clicks on body element
-$('body').on('click', function(event) {
+// Intercept all mouse clicks on body elements
+var wizardclickhook = function() {
+	
+	$('body').on('click', function(event) {		
+		wizardclickhandler(event);
+	})
+	
+	console.log('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
+	
+	setTimeout(function() {
+		wizardclickhook();
+	}, 3000);
+}
+wizardclickhook();
+
+// Wizard click intercept handler
+var wizardclickhandler = function(stepIdx) {
 	
 	// Display configuration work flow wizard if CTRL key is held during click
 	if (event.ctrlKey === true) {
@@ -228,11 +243,11 @@ $('body').on('click', function(event) {
 			}			
 		}
 	}
-});
+};
 
 /*
  * TODO's
- * 1. Determine why click events are not intercepted in Data Source Settings Screen.
+ * 1. Handle wizard click interceptor with body elements nested in iframes such as the Data Source Settings Screen.
  * 2. Make the wizard menu and toast more beautiful.
  * 3. Choose a configuration work flow and add to work flow JSON file.
  * 
