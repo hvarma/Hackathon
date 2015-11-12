@@ -27,7 +27,7 @@ var wizardflows = $.parseJSON('{' +
          '"workflows": [{' +
              '"type": "menuitem",' +				// Configuration work flow menu item
              '"title": "Configure Recorder",' +
-             '"steps": [{"step":3},{"step":4}]'+		// List of steps in the configuration work flow
+             '"steps": [{"step":3},{"step":4},{"step":5},{"step":6}]'+		// List of steps in the configuration work flow
          '},{' +
              '"type": "menuitem",' +
              '"title": "Configure Biometrics",' +
@@ -53,16 +53,30 @@ var wizardflows = $.parseJSON('{' +
 	     '},{' + 
 	         '"type": "step",' +
 	         '"id": 3,' +
-	         '"title": "Select Recorder Management Menu",' +
+	         '"title": "Open the Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
              '"proceed": {"type":"click","target":{"className": "as-navdrawer-img"}}'+
     	 '},{' + 
 	         '"type": "step",' +
 	         '"id": 4,' +
-	         '"title": "Select Data Source",' +
-	         '"x": 500,' +
-	         '"y": 600,' +
+	         '"title": "Hover over Recording Management and select DATA SOURCES Settings",' +
+	         '"x": 200,' +
+	         '"y": 200,' +
+             '"proceed": {"type":"click","target":{"outerText": "Settings"}}'+
+         '},{' + 
+	         '"type": "step",' +
+	         '"id": 5,' +
+	         '"title": "Create a new Data Source",' +
+	         '"x": 1300,' +
+	         '"y": 620,' +
+             '"proceed": {"type":"click","target":{"id": "toast"}}'+
+         '},{' + 
+	         '"type": "step",' +
+	         '"id": 6,' +
+	         '"title": "Select xxx",' +
+	         '"x": 600,' +
+	         '"y": 620,' +
              '"proceed": {"type":"click","target":{"id": "toast"}}'+
 	      '}]' + 
 	  '}');
@@ -78,7 +92,7 @@ var wizardtoast = function(wizardstep) {
          position: "fixed",
          padding: "7px",
          "text-align": "center",
-         "z-index": "19020",		// Higher that the WFO navigation bar of 19000 & 19020
+         "z-index": "130010",		// Higher that the WFO navigation bar of 130000
          width: "270px",
          left: wizardstep.x,
          top: wizardstep.y})
@@ -105,7 +119,6 @@ var wizardflowcomplete = function() {
     .fadeOut( 400, function(){
         $(this).remove();
     });
-
 }
 
 // Show Wizard menu
@@ -192,13 +205,13 @@ $('body').on('click', function(event) {
 		}
 		wizardmenu(x, y , menu);	
 	} else {
+		
+		if (console !== undefined) console.log(event);
 		// Intercept application clicks to proceed onto the next wizard step
 		if (wizardcurrentstep > -1) {
 			
 			var step = getwizardstep(getwizardflowstep().step);
 			if (event.type === step.proceed.type) {
-
-				if (console !== undefined) console.log(event);
 				
 				// Iterate target variables that need to be matched and check against event target properties
 				var match = true;
@@ -219,8 +232,7 @@ $('body').on('click', function(event) {
 
 /*
  * TODO's
- * 
- * 1. Ensure that menu and toast are always displayed on top in WFO/AppShell, specifically the navigation menu
+ * 1. Determine why click events are not intercepted in Data Source Settings Screen.
  * 2. Make the wizard menu and toast more beautiful.
  * 3. Choose a configuration work flow and add to work flow JSON file.
  * 
