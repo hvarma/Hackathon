@@ -42,21 +42,21 @@ var wizardflows = $.parseJSON('{' +
 	         '"title": "Select Recording Management Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
-	         '"proceed": "butn1"' +		// Condition that must be met to proceed to next step in work flow
+             '"proceed": {"type":"click","target":{"id": "toast"}}'+ // Condition that must be met to proceed to next step in work flow
          '},{' +
 	         '"type": "step",' +
 	         '"id": 2,' +
 	         '"title": "Select Data Source Settings",' +
 	         '"x": 500,' +
 	         '"y": 120,' +
-	         '"proceed": "butn2"' +
+             '"proceed": {"type":"click","target":{"id": "toast"}}'+
 	     '},{' + 
 	         '"type": "step",' +
 	         '"id": 3,' +
 	         '"title": "Select Risk Management Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
-	         '"proceed": "butn13"' +
+             '"proceed": {"type":"click","target":{"id": "toast"}}'+
 	      '}]' + 
 	  '}');
 
@@ -75,7 +75,7 @@ var wizardtoast = function(wizardstep) {
 	}
 
 	// Display next configuration step
-    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' onclick='wizardnextstep();'><h3>" + msg + "</h3></div>")
+    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3 id='toast'>" + msg + "</h3></div>")
     .css({ display: "block",
          background: "cyan",
          opacity: 0.90,
@@ -118,6 +118,8 @@ for (menuIdx in wizardflows.workflows) {
     	wizardsteps.push(wizardflows.workflows[menuIdx]);
     }
 }
+
+// Return the current work flow step
 var getwizardstep = function(stepIdx) {
 	for (idx in wizardsteps) {
 		if (wizardsteps[idx].id === stepIdx) {
@@ -138,6 +140,7 @@ var wizardnextstep = function() {
 	var nextstep = wizardflows.workflows[wizardflowselected].steps[wizardcurrentstep];
 	if (nextstep === undefined) {
 		wizardtoast(undefined);
+		wizardcurrentstep = -1;
 	} else {
 		wizardtoast(getwizardstep(nextstep.step));
 	}
@@ -163,7 +166,29 @@ $('body').on('click', function(event) {
 		    }
 		}
 		wizardmenu(x, y , menu);	
-	} 
+	} else {
+		// Intercept application clicks to proceed onto the next wizard step
+		if (wizardcurrentstep > -1) {
+			
+			var stepidx = wizardflows.workflows[wizardflowselected].steps[wizardcurrentstep].step;
+			var step = getwizardstep(stepidx);
+			if (event.type === step.proceed.type) {
+
+				// Iterate target variables that need to be matched and check against event target properties
+				var match = true;
+				for (var name in step.proceed.target) {
+					if (event.target[name] === step.proceed.target[name]) {
+						match = true;
+					} else {
+						match = false;
+					}
+				}
+				if (match === true) {
+					wizardnextstep();
+				}
+			}			
+		}
+	}
 });
 
 /*
