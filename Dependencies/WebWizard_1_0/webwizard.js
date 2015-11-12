@@ -184,23 +184,8 @@ var wizardnextstep = function() {
 	}
 }
 
-// Intercept all mouse clicks on body elements
-var wizardclickhook = function() {
-	
-	$('body').on('click', function(event) {		
-		wizardclickhandler(event);
-	})
-	
-	console.log('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
-	
-	setTimeout(function() {
-		wizardclickhook();
-	}, 3000);
-}
-wizardclickhook();
-
-// Wizard click intercept handler
-var wizardclickhandler = function(stepIdx) {
+//Wizard click intercept handler
+var wizardclickhandler = function(event) {
 	
 	// Display configuration work flow wizard if CTRL key is held during click
 	if (event.ctrlKey === true) {
@@ -244,6 +229,35 @@ var wizardclickhandler = function(stepIdx) {
 		}
 	}
 };
+
+// Intercept all mouse clicks on all body elements
+var wizardclickhook = function() {
+	
+	var handlerattached = false;
+
+	// Query $._data(element,'events') to retrieve the events that are attached to element.	
+	var bodyevents = $._data($('body').get(0),'events');
+	if (bodyevents != undefined) {
+		$.each(bodyevents.click, function(evtguid, funcobj) {
+		    // Check if wizardclickhandler is already attached to body element
+			if (funcobj.handler === wizardclickhandler) {
+		    	handlerattached = true;
+		    }
+		});
+	}
+	
+	console.log('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
+	
+	// If the wizard click handler is not already attached, attach it
+	if (handlerattached === false) {
+		$('body').on('click', wizardclickhandler);
+	}
+			
+	setTimeout(function() {
+		wizardclickhook();
+	}, 2000);
+}
+wizardclickhook();
 
 /*
  * TODO's
