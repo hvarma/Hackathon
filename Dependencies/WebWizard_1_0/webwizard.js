@@ -119,6 +119,11 @@ for (menuIdx in wizardflows.workflows) {
     }
 }
 
+// Return the current step from the current wizard flow
+var getwizardflowstep = function() {
+	return wizardflows.workflows[wizardflowselected].steps[wizardcurrentstep];
+}
+
 // Return the current work flow step
 var getwizardstep = function(stepIdx) {
 	for (idx in wizardsteps) {
@@ -137,7 +142,7 @@ var wizardcurrentstep = -1;
 var wizardnextstep = function() {
 	
 	wizardcurrentstep++;	
-	var nextstep = wizardflows.workflows[wizardflowselected].steps[wizardcurrentstep];
+	var nextstep = getwizardflowstep();
 	if (nextstep === undefined) {
 		wizardtoast(undefined);
 		wizardcurrentstep = -1;
@@ -170,8 +175,7 @@ $('body').on('click', function(event) {
 		// Intercept application clicks to proceed onto the next wizard step
 		if (wizardcurrentstep > -1) {
 			
-			var stepidx = wizardflows.workflows[wizardflowselected].steps[wizardcurrentstep].step;
-			var step = getwizardstep(stepidx);
+			var step = getwizardstep(getwizardflowstep().step);
 			if (event.type === step.proceed.type) {
 
 				// Iterate target variables that need to be matched and check against event target properties
