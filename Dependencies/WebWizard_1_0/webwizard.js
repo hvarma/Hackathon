@@ -270,6 +270,8 @@ var wizardclickhook = function() {
 	
 	$.each($('iframe'), function() {
 		console.log('iframe:' + this.name);		
+		//$(window.mctnt.document.getElementsByTagName("body")[0]).click(function() { alert("d"); });
+		//this.get(0).document.getElementsByTagName("body")[0].click(function() { alert("d"); });
 		// TODO $(this.get().document.getElementsByTagName("body")[0]).click(function() { alert("d"); });
 		//$('iframe').contents().find('body').on('click', wizardclickhandler);
 	});
@@ -285,6 +287,11 @@ wizardclickhook();
  * 1. Handle wizard click interceptor with body elements nested in iframes such as the Data Source Settings Screen.
  * 2. Make the wizard menu and toast more beautiful.
  * 3. Choose a configuration work flow and add to work flow JSON file.
+ * 
+ * Notes.
+ * 1. The event interception in this project can also be used to track and report user workflows 
+ *    independently of the wizard.
+ *    This could be used to track useability / common work flows used by verints customers.
  * 
  * Additionally required for productization
  * a. Encapsulate wizard code inside JavaScript object name space.
