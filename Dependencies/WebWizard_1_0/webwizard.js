@@ -244,6 +244,18 @@ var wizardclickhandler = function(event) {
 	}
 };
 
+// Add click event listener to all nested iframes
+wizardclickhookiframes = function(myEle) {
+
+	$.each( $(myEle).find("iframe"), function() {
+		var iframedoc = $(this).get(0).contentWindow.document; // may need to change this depending on browser       
+		iframedoc.onclick = wizardclickhandler;
+		//console.log('Attached onclick handler to iframe id:' + this.id);
+		// Recursivly call to hook into nested iframes 
+		wizardclickhookiframes(iframedoc);
+	});
+}
+
 // Intercept all mouse clicks on all body elements
 var wizardclickhook = function() {
 	
@@ -261,24 +273,22 @@ var wizardclickhook = function() {
 		});
 	}
 	
-	console.log('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
+	//console.log('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
 	
 	// If the wizard click handler is not already attached, attach it
 	if (handlerattached === false) {
 		$('body').on('click', wizardclickhandler);
 	}
 	
-	$.each($('iframe'), function() {
-		console.log('iframe:' + this.name);		
-		//$(window.mctnt.document.getElementsByTagName("body")[0]).click(function() { alert("d"); });
-		//this.get(0).document.getElementsByTagName("body")[0].click(function() { alert("d"); });
-		// TODO $(this.get().document.getElementsByTagName("body")[0]).click(function() { alert("d"); });
-		//$('iframe').contents().find('body').on('click', wizardclickhandler);
-	});
+	wizardclickhookiframes(wizardWin.document);
 			
 	setTimeout(function() {
 		wizardclickhook();
-	}, 2000);
+	}, 1000);
+}
+var wizardWin = null;
+if (wizardWin === null) {
+	wizardWin = this;
 }
 wizardclickhook();
 
