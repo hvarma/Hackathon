@@ -83,8 +83,8 @@ var wizardflows = $.parseJSON('{' +
 
 // Show Wizard configuration Notification
 var wizardtoast = function(wizardstep) {
-	
-    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>" + wizardstep.title + "</h3></div>")
+		
+	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>" + wizardstep.title + "</h3></div>")
     .css({ display: "block",
          background: "#FFFF00",
          opacity: 0.90,
@@ -97,15 +97,15 @@ var wizardtoast = function(wizardstep) {
          top: wizardstep.y})
     .appendTo("body")
     .fadeOut(0)
-    .slideDown(200, function() {
+    .fadeIn(500, function() {
        // Animation complete.
     }); 
 }
 
 // Show Wizard configuration flow complete Notification
 var wizardflowcomplete = function() {
-
-    $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>Configuration Complete</h3></div>")
+	
+	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>Configuration Complete</h3></div>")
     .css({ display: "block",
          background: "#FFFF00",
          opacity: 0.90,
@@ -129,8 +129,8 @@ var wizardflowcomplete = function() {
 
 // Show Wizard menu
 var wizardmenu = function(x, y, menu) {
-
-	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + menu + "</h3></div>")
+	
+	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divwizmenu'><h3>" + menu + "</h3></div>")
      .css({ display: "block",
          background: "#0C99C9",
          opacity: 0.90,
@@ -141,10 +141,10 @@ var wizardmenu = function(x, y, menu) {
          left: x,
          top: y })
      .appendTo("body")
-     .delay(1500)
-     .fadeOut(400, function(){
-         $(this).remove();
-     });
+     .fadeOut(0)
+     .fadeIn(300, function() {
+        // fadeIn Complete
+     })    
 }
 
 // Populate Work flows Steps
@@ -177,7 +177,10 @@ var wizardcurrentstep = -1;
 // Handle next step in the wizard
 var wizardnextstep = function() {
 	
-	// Remove any existing displayed toast
+	// Remove menu if displayed
+	$('#divwizmenu').remove();
+	
+	// Remove any existing toast
 	$('#divtoast').remove();
 
 	// Move onto the next toast in the work flow
@@ -214,6 +217,10 @@ var wizardclickhandler = function(event) {
 	} else {
 		
 		if (console !== undefined) console.log(event);
+
+		// Remove menu if displayed
+		$('#divwizmenu').remove();
+
 		// Intercept application clicks to proceed onto the next wizard step
 		if (wizardcurrentstep > -1) {
 			
