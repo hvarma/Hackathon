@@ -315,7 +315,7 @@ wizardclickhook();
 
 /*
  * TODO's
- * 1. Handle wizard click interceptor with body elements nested in iframes such as the Data Source Settings Screen.
+ * 1. Find out why Data Source Settings Screen button click events are not bubbled up to the iframe's body.
  * 2. Make the wizard menu and toast more beautiful.
  * 3. Choose a configuration work flow and add to work flow JSON file.
  * 
