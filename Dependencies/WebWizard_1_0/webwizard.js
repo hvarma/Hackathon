@@ -267,6 +267,12 @@ var wizardclickhook = function() {
 	if (handlerattached === false) {
 		$('body').on('click', wizardclickhandler);
 	}
+	
+	$.each($('iframe'), function() {
+		console.log('iframe:' + this.name);		
+		// TODO $(this.get().document.getElementsByTagName("body")[0]).click(function() { alert("d"); });
+		//$('iframe').contents().find('body').on('click', wizardclickhandler);
+	});
 			
 	setTimeout(function() {
 		wizardclickhook();
