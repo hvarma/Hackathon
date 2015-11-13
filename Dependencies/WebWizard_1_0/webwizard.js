@@ -194,7 +194,7 @@ var wizardnextstep = function() {
 	}
 }
 
-//Wizard click intercept handler
+// Wizard click intercept handler
 var wizardclickhandler = function(event) {
 	
 	// Display configuration work flow wizard if CTRL key is held during click
@@ -249,9 +249,10 @@ var wizardclickhook = function() {
 	
 	var handlerattached = false;
 
-	// Query $._data(element,'events') to retrieve the events that are attached to element.	
+	// Use $._data(element,'events') to retrieve existing events attached to the body element.	
 	var bodyevents = $._data($('body').get(0),'events');
 	if (bodyevents != undefined) {
+		// Iterate each attached click event handler
 		$.each(bodyevents.click, function(evtguid, funcobj) {
 		    // Check if wizardclickhandler is already attached to body element
 			if (funcobj.handler === wizardclickhandler) {
