@@ -86,9 +86,8 @@ var wizardtoast = function(wizardstep) {
 	
     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>" + wizardstep.title + "</h3></div>")
     .css({ display: "block",
-         background: "cyan",
+         background: "#FFFF00",
          opacity: 0.90,
-         //visibility: "hidden",
          position: "fixed",
          padding: "7px",
          "text-align": "center",
@@ -108,7 +107,7 @@ var wizardflowcomplete = function() {
 
     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>Configuration Complete</h3></div>")
     .css({ display: "block",
-         background: "cyan",
+         background: "#FFFF00",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
@@ -133,7 +132,7 @@ var wizardmenu = function(x, y, menu) {
 
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all'><h3>" + menu + "</h3></div>")
      .css({ display: "block",
-         background: "yellow",
+         background: "#0C99C9",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
@@ -208,7 +207,7 @@ var wizardclickhandler = function(event) {
 		var menu = '';
 		for (menuIdx in wizardflows.workflows) {
 		    if (wizardflows.workflows[menuIdx].type === 'menuitem') {
-		    	menu += '<a href="#" onclick="wizardflowselected=' + menuIdx + ';wizardcurrentstep=-1;wizardnextstep();">' + wizardflows.workflows[menuIdx].title  + '</a></br>';
+		    	menu += '<a style="color:white;text-decoration:none" href="#" onclick="wizardflowselected=' + menuIdx + ';wizardcurrentstep=-1;wizardnextstep();">' + wizardflows.workflows[menuIdx].title  + '</a></br>';
 		    }
 		}
 		wizardmenu(x, y , menu);	
