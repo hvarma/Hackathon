@@ -244,13 +244,32 @@ var wizardclickhandler = function(event) {
 	}
 };
 
-// Add click event listener to all nested iframes
+// Add click event listener to all nested iframe document elements
 wizardclickhookiframes = function(myEle) {
 
-	$.each( $(myEle).find("iframe"), function() {
-		var iframedoc = $(this).get(0).contentWindow.document; // may need to change this depending on browser       
-		iframedoc.onclick = wizardclickhandler;
-		//console.log('Attached onclick handler to iframe id:' + this.id);
+	// Iterate each iframe nested in myEle
+	$.each($(myEle).find("iframe"), function() {
+
+		var iframedoc = $(this)[0].contentWindow.document; // may need to change this depending on browser
+		var handlerattached = false;
+		
+		// Use $._data(element,'events') to retrieve existing events attached to the element.	
+		var iframeevents = $._data(iframedoc,'events');
+		if (iframeevents !== undefined) {
+			$.each(iframeevents.click, function(evtguid, funcobj) {
+			    // Check if wizardclickhandler is already attached to element
+				if (funcobj.handler === wizardclickhandler) {
+			    	handlerattached = true;
+			    }
+			});
+		}
+		
+		// If click handler is not attached to iframe, attach it
+		if (handlerattached === false) {
+			$(iframedoc).on('click', wizardclickhandler);
+			console.log('Attached onclick handler to iframe id:' + this.id);
+		}
+		
 		// Recursivly call to hook into nested iframes 
 		wizardclickhookiframes(iframedoc);
 	});
@@ -261,12 +280,12 @@ var wizardclickhook = function() {
 	
 	var handlerattached = false;
 
-	// Use $._data(element,'events') to retrieve existing events attached to the body element.	
-	var bodyevents = $._data($('body').get(0),'events');
-	if (bodyevents != undefined) {
+	// Use $._data(element,'events') to retrieve existing events attached to the element.	
+	var bodyevents = $._data($('body')[0],'events');
+	if (bodyevents !== undefined) {
 		// Iterate each attached click event handler
 		$.each(bodyevents.click, function(evtguid, funcobj) {
-		    // Check if wizardclickhandler is already attached to body element
+		    // Check if wizardclickhandler is already attached to element
 			if (funcobj.handler === wizardclickhandler) {
 		    	handlerattached = true;
 		    }
