@@ -328,14 +328,16 @@ wizardmousedownhook();
 
 /*
  * TODO's
- * 1. Write code for button onmousedown handler to advance wizard on fake button cick.
- * 2. Make the wizard menu and toast more beautiful.
- * 3. Choose a configuration work flow and add to work flow JSON file.
+ * 1. Make the wizard menu and toast more beautiful.
+ * 2. Choose a configuration work flow and add to work flow JSON file.
  * 
  * Notes.
  * 1. The event interception in this project can also be used to track and report user workflows 
  *    independently of the wizard.
  *    This could be used to track useability / common work flows used by verints customers.
+ *    
+ * 2. The event interception in this project can also be used to create a user inteface for creating 
+ *    the wizard flows, allowing wizard flows to be created or updated without requiring any coding skills.
  * 
  * Additionally required for productization
  * a. Encapsulate wizard code inside JavaScript object name space.
@@ -343,7 +345,5 @@ wizardmousedownhook();
  * c. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
  * d. Update the code to read the JSON work flow configuration from the host web server. 
  * e. Consider creating a UI for the creation of the JSON work flow configuration.
- *    The UI can use the wizardmousedownhandler() to prompt the end user to select the web application
- *    widget that needs to be selected for the wizard to move onto the next step.
  * f. Add additional configuration work flows.
  */
