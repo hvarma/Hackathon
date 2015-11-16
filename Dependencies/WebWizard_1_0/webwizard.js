@@ -66,7 +66,7 @@ var wizardflows = $.parseJSON('{' +
     	 '},{' + 
 	         '"type": "step",' +
 	         '"id": 4,' +
-	         '"title": "Hover over Recording Management &#8226;  Select DATA SOURCES Settings",' +
+	         '"title": "Hover over Recording Management </br> &#8226;  Select DATA SOURCES Settings",' +
 	         '"x": 200,' +
 	         '"y": 200,' +
              '"proceed": {"type":"mousedown","target":{"outerText": "Settings"}}'+
