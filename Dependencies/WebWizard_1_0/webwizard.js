@@ -78,7 +78,7 @@ var wizardflows = $.parseJSON('{' +
 	         '"type": "step",' +
 	         '"id": 6,' +
 	         '"title": "Select Phone type and Cisco Unified Call Manager Switch type",' +
-	         '"x": 800,' +
+	         '"x": 1200,' +
 	         '"y": 400,' +
              '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+
 	      '}]' + 
