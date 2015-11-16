@@ -111,7 +111,7 @@ var wizardflows = $.parseJSON('{' +
 	         '"title": "Select Save",' +
 	         '"x": 1200,' +
 	         '"y": 700,' +
-             '"proceed": {"type":"mousedown","target":{"OuterText": "Save"}}'+
+             '"proceed": {"type":"mousedown","target":{"outerText": "Save"}}'+
          '}]' + 
 	  '}');
 
