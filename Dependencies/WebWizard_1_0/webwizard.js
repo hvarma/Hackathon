@@ -42,28 +42,28 @@ var wizardflows = $.parseJSON('{' +
 	         '"title": "Select Risk Management Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
-             '"proceed": {"type":"click","target":{"id": "toast"}}'+ // Condition that must be met to proceed to next step in work flow
+             '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+ // Condition that must be met to proceed to next step in work flow
          '},{' +
 	         '"type": "step",' +
 	         '"id": 2,' +
 	         '"title": "Select Data Source Settings",' +
 	         '"x": 500,' +
 	         '"y": 120,' +
-             '"proceed": {"type":"click","target":{"id": "toast"}}'+
+             '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+
 	     '},{' + 
 	         '"type": "step",' +
 	         '"id": 3,' +
 	         '"title": "Open the Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
-             '"proceed": {"type":"click","target":{"className": "as-navdrawer-img"}}'+
+             '"proceed": {"type":"mousedown","target":{"className": "as-navdrawer-img"}}'+
     	 '},{' + 
 	         '"type": "step",' +
 	         '"id": 4,' +
 	         '"title": "Hover over Recording Management and select DATA SOURCES Settings",' +
 	         '"x": 200,' +
 	         '"y": 200,' +
-             '"proceed": {"type":"click","target":{"outerText": "Settings"}}'+
+             '"proceed": {"type":"mousedown","target":{"outerText": "Settings"}}'+
          '},{' + 
 	         '"type": "step",' +
 	         '"id": 5,' +
@@ -77,7 +77,7 @@ var wizardflows = $.parseJSON('{' +
 	         '"title": "Select Phone type and Cisco Unified Call Manager Switch type",' +
 	         '"x": 800,' +
 	         '"y": 400,' +
-             '"proceed": {"type":"click","target":{"id": "toast"}}'+
+             '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+
 	      '}]' + 
 	  '}');
 
@@ -201,23 +201,23 @@ var wizardnextstep = function() {
 	}
 }
 
-// Wizard click intercept handler
-var wizardclickhandler = function(event) {
+// Wizard mouse down intercept handler
+var wizardmousedownhandler = function(event) {
 	
-	// Display configuration work flow wizard if CTRL key is held during click
+	// Display configuration work flow wizard if CTRL key is held during mousedown
 	if (event.ctrlKey === true) {
 		
 		// Prevent default action of the event from being triggered.
 		event.preventDefault();
 		  		
-		// Custom click handler
+		// Custom mouse down handler
 		var x = ($(window).width() - 284)/2;
 		var y = $(window).height()/2;
 
 		var menu = '';
 		for (menuIdx in wizardflows.workflows) {
 		    if (wizardflows.workflows[menuIdx].type === 'menuitem') {
-		    	menu += '<a style="color:white;text-decoration:none" href="#" onclick="wizardflowselected=' + menuIdx + ';wizardcurrentstep=-1;wizardnextstep();">' + wizardflows.workflows[menuIdx].title  + '</a></br>';
+		    	menu += '<a style="color:white;text-decoration:none" href="#" onmousedown="wizardflowselected=' + menuIdx + ';wizardcurrentstep=-1;wizardnextstep();">' + wizardflows.workflows[menuIdx].title  + '</a></br>';
 		    }
 		}
 		wizardmenu(x, y , menu);	
@@ -228,7 +228,7 @@ var wizardclickhandler = function(event) {
 		// Remove menu if displayed
 		$('#divwizmenu').remove();
 
-		// Intercept application clicks to proceed onto the next wizard step
+		// Intercept application mousedown to proceed onto the next wizard step
 		if (wizardcurrentstep > -1) {
 			
 			var step = getwizardstep(getwizardflowstep().step);
@@ -251,8 +251,8 @@ var wizardclickhandler = function(event) {
 	}
 };
 
-// Add click event listener to all nested iframe document elements
-wizardclickhookiframes = function(myEle) {
+// Add mousedown event listener to all nested iframe document elements
+wizardmousedownhookiframes = function(myEle) {
 
 	// Iterate each iframe nested in myEle
 	$.each($(myEle).find("iframe"), function() {
@@ -267,70 +267,64 @@ wizardclickhookiframes = function(myEle) {
 			var iframebodyevents = $._data(iframebody[0],'events');
 			if (iframebodyevents !== undefined && iframebodyevents.mousedown !== undefined) {
 				$.each(iframebodyevents.mousedown, function(evtguid, funcobj) {
-				    // Check if wizardclickhandler is already attached to element
-					if (funcobj.handler === wizardclickhandler) {
+				    // Check if wizardmousedownhandler is already attached to element
+					if (funcobj.handler === wizardmousedownhandler) {
 				    	handlerattached = true;
 				    }
 				});
 			} 
 			
-			// If click handler is not attached to iframe, attach it
+			// If mousedown handler is not attached to iframe, attach it
 			if (handlerattached === false) {
-				$(iframebody).on('mousedown', wizardclickhandler);
+				$(iframebody).on('mousedown', wizardmousedownhandler);
 				wizlog('Attached onmousedown handler to iframe id:' + this.id + ' body element');
 			}
 		
 			// Recursivly call to hook into nested iframes 
-			wizardclickhookiframes(iframedoc);
+			wizardmousedownhookiframes(iframedoc);
 		} catch(err) {
 			// Ignore undefined exception race condition if iframe created but body does not yet exist
 			// Handler attach will be retried next timeout
-			wizlog('wizardclickhookiframes.' + err);
+			wizlog('wizardmousedownhookiframes.' + err);
 		}
 		
 	});
 }
 
-// Intercept all mouse clicks on all body elements
-var wizardclickhook = function() {
+// Intercept all mousedown on all body elements
+var wizardmousedownhook = function() {
 	
-//	try {
-		var handlerattached = false;
-	
-		// Use $._data(element,'events') to retrieve existing events attached to the element.	
-		var bodyevents = $._data($('body')[0],'events');
-		if (bodyevents !== undefined) {
-			// Iterate each attached click event handler
-			$.each(bodyevents.click, function(evtguid, funcobj) {
-			    // Check if wizardclickhandler is already attached to element
-				if (funcobj.handler === wizardclickhandler) {
-			    	handlerattached = true;
-			    }
-			});
-		}
-			
-		// If the wizard click handler is not already attached, attach it
-		if (handlerattached === false) {
-			$('body').on('click', wizardclickhandler);
-			wizlog('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
-		}
+	var handlerattached = false;
+
+	// Use $._data(element,'events') to retrieve existing events attached to the element.	
+	var bodyevents = $._data($('body')[0],'events');
+	if (bodyevents !== undefined) {
+		// Iterate each attached mousedown event handler
+		$.each(bodyevents.mousedown, function(evtguid, funcobj) {
+		    // Check if wizardmousedownhandler is already attached to element
+			if (funcobj.handler === wizardmousedownhandler) {
+		    	handlerattached = true;
+		    }
+		});
+	}
 		
-		wizardclickhookiframes(wizardWin.document);
-//	} catch(err) {
-		// Ignore undefined exception race condition if iframe created but body does not yet exist
-		// Handler attach will be retried next timeout
-//		wizlog('wizardclickhook.' + err);
-//	}
+	// If the wizard mousedown handler is not already attached, attach it
+	if (handlerattached === false) {
+		$('body').on('mousedown', wizardmousedownhandler);
+		wizlog('Wizard attach mousedown hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
+	}
+	
+	wizardmousedownhookiframes(wizardWin.document);
 			
 	setTimeout(function() {
-		wizardclickhook();
+		wizardmousedownhook();
 	}, 1000);
 }
 var wizardWin = null;
 if (wizardWin === null) {
 	wizardWin = this;
 }
-wizardclickhook();
+wizardmousedownhook();
 
 /*
  * TODO's
@@ -344,11 +338,12 @@ wizardclickhook();
  *    This could be used to track useability / common work flows used by verints customers.
  * 
  * Additionally required for productization
- * a. Consider attaching onmousedown event handler to all body elements instead on onclick
- * b. Encapsulate wizard code inside JavaScript object name space.
- * c. Allow toast notification locations be to determined relative to target UI item. 
- * d. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
- * e. Update the code to read the JSON work flow configuration from the host web server. 
- * f. Consider creating a UI for the creation of the JSON work flow configuration.
- * g. Add additional configuration work flows.
+ * a. Encapsulate wizard code inside JavaScript object name space.
+ * b. Allow toast notification locations be to determined relative to target UI item. 
+ * c. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
+ * d. Update the code to read the JSON work flow configuration from the host web server. 
+ * e. Consider creating a UI for the creation of the JSON work flow configuration.
+ *    The UI can use the wizardmousedownhandler() to prompt the end user to select the web application
+ *    widget that needs to be selected for the wizard to move onto the next step.
+ * f. Add additional configuration work flows.
  */
