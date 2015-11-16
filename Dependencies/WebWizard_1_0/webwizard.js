@@ -9,7 +9,10 @@
  *   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference or http://www.w3schools.com/jsref/
  *  
  * DOM and Event Documentation:
- *   http://www.w3schools.com/jsref/dom_obj_event.asp  
+ *   http://www.w3schools.com/jsref/dom_obj_event.asp 
+ *   
+ * HTML charecter codes:
+ *   http://www.ascii.cl/htmlcodes.htm
  *   
  * Chrome Browser Debugging select: Menu > More Tools > Developer Tools
  * From here you can view the and debug by inserting the following into your JavaScript code:
@@ -30,7 +33,7 @@ var wizardflows = $.parseJSON('{' +
          '"workflows": [{' +
              '"type": "menuitem",' +				// Configuration work flow menu item
              '"title": "Configure Recorder",' +
-             '"steps": [{"step":3},{"step":4},{"step":5},{"step":6}]'+		// List of steps in the configuration work flow
+             '"steps": [{"step":3},{"step":4},{"step":5},{"step":6},{"step":7},{"step":8},{"step":9},{"step":10}]'+		// List of steps in the configuration work flow
          '},{' +
              '"type": "menuitem",' +
              '"title": "Configure Biometrics",' +
@@ -77,11 +80,39 @@ var wizardflows = $.parseJSON('{' +
          '},{' + 
 	         '"type": "step",' +
 	         '"id": 6,' +
-	         '"title": "Select Phone type and Cisco Unified Call Manager Switch type",' +
+	         '"title": "Select Phone type and Cisco Unified Call Manager Switch type</br> &#8226; Press Select",' +
 	         '"x": 1200,' +
 	         '"y": 400,' +
-             '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+
-	      '}]' + 
+             '"proceed": {"type":"mousedown","target":{"id": "toolbar_CREATE_NEW_DSLabel"}}'+
+         '},{' + 
+	         '"type": "step",' +
+	         '"id": 7,' +
+	         '"title": "Enter your data source name",' +
+	         '"x": 850,' +
+	         '"y": 250,' +
+             '"proceed": {"type":"keydown","target":{"id": "dataSourceName"}}' +
+         '},{' + 
+	         '"type": "step",' +
+	         '"id": 8,' +
+	         '"title": "Enter a data source description",' +
+	         '"x": 850,' +
+	         '"y": 290,' +
+             '"proceed": {"type":"keydown","target":{"id": "description_0"}}' +
+         '},{' + 
+	         '"type": "step",' +
+	         '"id": 9,' +
+	         '"title": "Check Associated Integration Service Installations &#8226; Your Recorder Integration Service",' +
+	         '"x": 850,' +
+	         '"y": 600,' +
+             '"proceed": {"type":"mousedown","target":{"name": "checkedID"}}' +
+         '},{' + 
+	         '"type": "step",' +
+	         '"id": 10,' +
+	         '"title": "Select Save",' +
+	         '"x": 1200,' +
+	         '"y": 700,' +
+             '"proceed": {"type":"mousedown","target":{"OuterText": "Save"}}'+
+         '}]' + 
 	  '}');
 
 // Show Wizard configuration Notification
@@ -247,9 +278,10 @@ var wizardmousedownhandler = function(event) {
 			if (event.type === step.proceed.type) {
 				
 				// Iterate target variables that need to be matched and check against event target properties
+				// All event target properties must be matched in AND comparison
 				var match = true;
 				for (var name in step.proceed.target) {
-					if (event.target[name].indexOf(step.proceed.target[name]) > -1) {
+					if (event.target[name] !== undefined && event.target[name].indexOf(step.proceed.target[name]) > -1) {
 						match = true;
 					} else {
 						match = false;
@@ -289,6 +321,7 @@ wizardmousedownhookiframes = function(myEle) {
 			// If mousedown handler is not attached to iframe, attach it
 			if (handlerattached === false) {
 				$(iframebody).on('mousedown', wizardmousedownhandler);
+				$(iframebody).on('keydown', wizardmousedownhandler);
 				wizlog('Attached onmousedown handler to iframe id:' + this.id + ' body element');
 			}
 		
@@ -323,6 +356,7 @@ var wizardmousedownhook = function() {
 	// If the wizard mousedown handler is not already attached, attach it
 	if (handlerattached === false) {
 		$('body').on('mousedown', wizardmousedownhandler);
+		$('body').on('keydown', wizardmousedownhandler);
 		wizlog('Wizard attach mousedown hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
 	}
 	
