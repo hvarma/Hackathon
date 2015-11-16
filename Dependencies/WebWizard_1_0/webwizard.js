@@ -90,6 +90,7 @@ var wizardtoast = function(wizardstep) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>" + wizardstep.title + "</h3></div>")
     .css({ display: "block",
          background: "#0C99C9",
+         "border-radius": "10px",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
@@ -112,6 +113,7 @@ var wizardflowcomplete = function() {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>Configuration Complete</h3></div>")
     .css({ display: "block",
          background: "#0C99C9",
+         "border-radius": "10px",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
@@ -138,6 +140,7 @@ var wizardmenu = function(x, y, menu) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divwizmenu'><h3>" + menu + "</h3></div>")
      .css({ display: "block",
          background: "#0C99C9",
+         "border-radius": "10px",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
