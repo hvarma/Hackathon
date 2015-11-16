@@ -7,6 +7,9 @@
  *   
  * JavaScript Documentation:
  *   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference or http://www.w3schools.com/jsref/
+ *  
+ * DOM and Event Documentation:
+ *   http://www.w3schools.com/jsref/dom_obj_event.asp  
  *   
  * Chrome Browser Debugging select: Menu > More Tools > Developer Tools
  * From here you can view the and debug by inserting the following into your JavaScript code:
