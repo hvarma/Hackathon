@@ -70,13 +70,13 @@ var wizardflows = $.parseJSON('{' +
 	         '"title": "Create a new Data Source",' +
 	         '"x": 1300,' +
 	         '"y": 620,' +
-             '"proceed": {"type":"click","target":{"id": "toast"}}'+
+             '"proceed": {"type":"mousedown","target":{"outerText": "Create Data Source"}}'+
          '},{' + 
 	         '"type": "step",' +
 	         '"id": 6,' +
-	         '"title": "Select xxx",' +
-	         '"x": 600,' +
-	         '"y": 620,' +
+	         '"title": "Select Phone type and Cisco Unified Call Manager Switch type",' +
+	         '"x": 800,' +
+	         '"y": 400,' +
              '"proceed": {"type":"click","target":{"id": "toast"}}'+
 	      '}]' + 
 	  '}');
@@ -170,6 +170,13 @@ var getwizardstep = function(stepIdx) {
 	return null;
 }
 
+// Log only if console is available
+var wizlog = function(obj) {
+	if (window.console) {
+		console.log(obj);
+	}
+}
+
 // Selected work flow and current step in the wizard
 var wizardflowselected = -1;
 var wizardcurrentstep = -1;
@@ -216,7 +223,7 @@ var wizardclickhandler = function(event) {
 		wizardmenu(x, y , menu);	
 	} else {
 		
-		if (console !== undefined) console.log(event);
+		wizlog(event);
 
 		// Remove menu if displayed
 		$('#divwizmenu').remove();
@@ -258,19 +265,19 @@ wizardclickhookiframes = function(myEle) {
 			
 			// Use $._data(element,'events') to retrieve existing events attached to the element.	
 			var iframebodyevents = $._data(iframebody[0],'events');
-			if (iframebodyevents !== undefined) {
-				$.each(iframebodyevents.click, function(evtguid, funcobj) {
+			if (iframebodyevents !== undefined && iframebodyevents.mousedown !== undefined) {
+				$.each(iframebodyevents.mousedown, function(evtguid, funcobj) {
 				    // Check if wizardclickhandler is already attached to element
 					if (funcobj.handler === wizardclickhandler) {
 				    	handlerattached = true;
 				    }
-				}); 
-			}
+				});
+			} 
 			
 			// If click handler is not attached to iframe, attach it
 			if (handlerattached === false) {
 				$(iframebody).on('mousedown', wizardclickhandler);
-				console.log('Attached onmousedown handler to iframe id:' + this.id);
+				wizlog('Attached onmousedown handler to iframe id:' + this.id + ' body element');
 			}
 		
 			// Recursivly call to hook into nested iframes 
@@ -278,6 +285,7 @@ wizardclickhookiframes = function(myEle) {
 		} catch(err) {
 			// Ignore undefined exception race condition if iframe created but body does not yet exist
 			// Handler attach will be retried next timeout
+			wizlog('wizardclickhookiframes.' + err);
 		}
 		
 	});
@@ -286,28 +294,33 @@ wizardclickhookiframes = function(myEle) {
 // Intercept all mouse clicks on all body elements
 var wizardclickhook = function() {
 	
-	var handlerattached = false;
-
-	// Use $._data(element,'events') to retrieve existing events attached to the element.	
-	var bodyevents = $._data($('body')[0],'events');
-	if (bodyevents !== undefined) {
-		// Iterate each attached click event handler
-		$.each(bodyevents.click, function(evtguid, funcobj) {
-		    // Check if wizardclickhandler is already attached to element
-			if (funcobj.handler === wizardclickhandler) {
-		    	handlerattached = true;
-		    }
-		});
-	}
+//	try {
+		var handlerattached = false;
 	
-	//console.log('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
-	
-	// If the wizard click handler is not already attached, attach it
-	if (handlerattached === false) {
-		$('body').on('click', wizardclickhandler);
-	}
-	
-	wizardclickhookiframes(wizardWin.document);
+		// Use $._data(element,'events') to retrieve existing events attached to the element.	
+		var bodyevents = $._data($('body')[0],'events');
+		if (bodyevents !== undefined) {
+			// Iterate each attached click event handler
+			$.each(bodyevents.click, function(evtguid, funcobj) {
+			    // Check if wizardclickhandler is already attached to element
+				if (funcobj.handler === wizardclickhandler) {
+			    	handlerattached = true;
+			    }
+			});
+		}
+			
+		// If the wizard click handler is not already attached, attach it
+		if (handlerattached === false) {
+			$('body').on('click', wizardclickhandler);
+			wizlog('Wizard attach click hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
+		}
+		
+		wizardclickhookiframes(wizardWin.document);
+//	} catch(err) {
+		// Ignore undefined exception race condition if iframe created but body does not yet exist
+		// Handler attach will be retried next timeout
+//		wizlog('wizardclickhook.' + err);
+//	}
 			
 	setTimeout(function() {
 		wizardclickhook();
