@@ -250,30 +250,36 @@ wizardclickhookiframes = function(myEle) {
 	// Iterate each iframe nested in myEle
 	$.each($(myEle).find("iframe"), function() {
 
-		var iframedoc = $(this)[0].contentWindow.document; // may need to change this depending on browser
-		var iframebody = $(iframedoc).find("body");
-
-		var handlerattached = false;
+		try {
+			var iframedoc = $(this)[0].contentWindow.document; // may need to change this depending on browser
+			var iframebody = $(iframedoc).find("body");
+	
+			var handlerattached = false;
+			
+			// Use $._data(element,'events') to retrieve existing events attached to the element.	
+			var iframebodyevents = $._data(iframebody[0],'events');
+			if (iframebodyevents !== undefined) {
+				$.each(iframebodyevents.click, function(evtguid, funcobj) {
+				    // Check if wizardclickhandler is already attached to element
+					if (funcobj.handler === wizardclickhandler) {
+				    	handlerattached = true;
+				    }
+				}); 
+			}
+			
+			// If click handler is not attached to iframe, attach it
+			if (handlerattached === false) {
+				$(iframebody).on('click', wizardclickhandler);
+				console.log('Attached onclick handler to iframe id:' + this.id);
+			}
 		
-		// Use $._data(element,'events') to retrieve existing events attached to the element.	
-		var iframebodyevents = $._data(iframebody[0],'events');
-		if (iframebodyevents !== undefined) {
-			$.each(iframebodyevents.click, function(evtguid, funcobj) {
-			    // Check if wizardclickhandler is already attached to element
-				if (funcobj.handler === wizardclickhandler) {
-			    	handlerattached = true;
-			    }
-			});
+			// Recursivly call to hook into nested iframes 
+			wizardclickhookiframes(iframedoc);
+		} catch(err) {
+			// Ignore undefined exception race condition if iframe created but body does not yet exist
+			// Handler attach will be retried next timeout
 		}
 		
-		// If click handler is not attached to iframe, attach it
-		if (handlerattached === false) {
-			$(iframebody).on('click', wizardclickhandler);
-			console.log('Attached onclick handler to iframe id:' + this.id);
-		}
-		
-		// Recursivly call to hook into nested iframes 
-		wizardclickhookiframes(iframedoc);
 	});
 }
 
@@ -316,6 +322,9 @@ wizardclickhook();
 /*
  * TODO's
  * 1. Find out why Data Source Settings Screen button click events are not bubbled up to the iframe's body.
+ *    a) Try using mouse down attached to body.
+ *    b) try using addListener attached to actual button/div.
+ *    c) Try assigning onclick = onclick + xxx to actual button/div
  * 2. Make the wizard menu and toast more beautiful.
  * 3. Choose a configuration work flow and add to work flow JSON file.
  * 
