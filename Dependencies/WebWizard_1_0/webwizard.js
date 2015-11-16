@@ -89,12 +89,13 @@ var wizardtoast = function(wizardstep) {
 		
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>" + wizardstep.title + "</h3></div>")
     .css({ display: "block",
-         background: "#FFFF00",
+         background: "#0C99C9",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
          "text-align": "center",
-         "z-index": "130010",		// Higher that the WFO navigation bar of 130000
+		 color:"white",
+		 "z-index": "130010",		// Higher that the WFO navigation bar of 130000
          width: "270px",
          left: wizardstep.x,
          top: wizardstep.y})
@@ -110,12 +111,13 @@ var wizardflowcomplete = function() {
 	
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>Configuration Complete</h3></div>")
     .css({ display: "block",
-         background: "#FFFF00",
+         background: "#0C99C9",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
          "text-align": "center",
          "z-index": "19020",		// Higher that the WFO navigation bar of 19000 & 19020
+		 color:"white",
          width: "270px",
          left: ($(window).width() - 284)/2,
          top: $(window).height()/2})
@@ -140,6 +142,7 @@ var wizardmenu = function(x, y, menu) {
          position: "fixed",
          padding: "7px",
          "text-align": "center",
+		 color:"white",
          width: "270px",
          left: x,
          top: y })
