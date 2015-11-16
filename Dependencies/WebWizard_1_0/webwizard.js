@@ -63,7 +63,7 @@ var wizardflows = $.parseJSON('{' +
     	 '},{' + 
 	         '"type": "step",' +
 	         '"id": 4,' +
-	         '"title": "Hover over Recording Management and select DATA SOURCES Settings",' +
+	         '"title": "Hover over Recording Management &#8226;  Select DATA SOURCES Settings",' +
 	         '"x": 200,' +
 	         '"y": 200,' +
              '"proceed": {"type":"mousedown","target":{"outerText": "Settings"}}'+
@@ -90,6 +90,7 @@ var wizardtoast = function(wizardstep) {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>" + wizardstep.title + "</h3></div>")
     .css({ display: "block",
          background: "#0C99C9",
+         border: "2px solid black",
          "border-radius": "10px",
          opacity: 0.90,
          position: "fixed",
@@ -113,6 +114,7 @@ var wizardflowcomplete = function() {
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divtoast'><h3 id='toast'>Configuration Complete</h3></div>")
     .css({ display: "block",
          background: "#0C99C9",
+         border: "2px solid black",
          "border-radius": "10px",
          opacity: 0.90,
          position: "fixed",
@@ -138,8 +140,9 @@ var wizardflowcomplete = function() {
 var wizardmenu = function(x, y, menu) {
 	
 	$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divwizmenu'><h3>" + menu + "</h3></div>")
-     .css({ display: "block",
+	  .css({ display: "block",
          background: "#0C99C9",
+         border: "2px solid black",
          "border-radius": "10px",
          opacity: 0.90,
          position: "fixed",
