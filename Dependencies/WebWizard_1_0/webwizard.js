@@ -244,16 +244,16 @@ var wizardnextstep = function() {
 	}
 }
 
-// Wizard mouse down intercept handler
-var wizardmousedownhandler = function(event) {
+// Wizard mouse/key down intercept handler
+var wizardeventhandler = function(event) {
 	
-	// Display configuration work flow wizard if CTRL key is held during mousedown
-	if (event.ctrlKey === true) {
+	// Display configuration work flow wizard if CTRL key is held during mouse down
+	if (event.ctrlKey === true && event.type === 'mousedown') {
 		
 		// Prevent default action of the event from being triggered.
 		event.preventDefault();
 		  		
-		// Custom mouse down handler
+		// Custom event handler
 		var x = ($(window).width() - 284)/2;
 		var y = $(window).height()/2;
 
@@ -265,6 +265,8 @@ var wizardmousedownhandler = function(event) {
 		}
 		wizardmenu(x, y , menu);	
 	} else {
+		
+		if (event.ctrlKey === true) return;
 		
 		wizlog(event);
 
@@ -295,8 +297,8 @@ var wizardmousedownhandler = function(event) {
 	}
 };
 
-// Add mousedown event listener to all nested iframe document elements
-wizardmousedownhookiframes = function(myEle) {
+// Add mouse/key down event listener to all nested iframe document elements
+wizardeventhookiframes = function(myEle) {
 
 	// Iterate each iframe nested in myEle
 	$.each($(myEle).find("iframe"), function() {
@@ -311,33 +313,33 @@ wizardmousedownhookiframes = function(myEle) {
 			var iframebodyevents = $._data(iframebody[0],'events');
 			if (iframebodyevents !== undefined && iframebodyevents.mousedown !== undefined) {
 				$.each(iframebodyevents.mousedown, function(evtguid, funcobj) {
-				    // Check if wizardmousedownhandler is already attached to element
-					if (funcobj.handler === wizardmousedownhandler) {
+				    // Check if wizardeventhandler is already attached to element
+					if (funcobj.handler === wizardeventhandler) {
 				    	handlerattached = true;
 				    }
 				});
 			} 
 			
-			// If mousedown handler is not attached to iframe, attach it
+			// If event handler is not attached to iframe, attach it
 			if (handlerattached === false) {
-				$(iframebody).on('mousedown', wizardmousedownhandler);
-				$(iframebody).on('keydown', wizardmousedownhandler);
-				wizlog('Attached onmousedown handler to iframe id:' + this.id + ' body element');
+				$(iframebody).on('mousedown', wizardeventhandler);
+				$(iframebody).on('keydown', wizardeventhandler);
+				wizlog('Attached event handler to iframe id:' + this.id + ' body element');
 			}
 		
 			// Recursivly call to hook into nested iframes 
-			wizardmousedownhookiframes(iframedoc);
+			wizardeventhookiframes(iframedoc);
 		} catch(err) {
 			// Ignore undefined exception race condition if iframe created but body does not yet exist
 			// Handler attach will be retried next timeout
-			wizlog('wizardmousedownhookiframes.' + err);
+			wizlog('wizardeventhookiframes.' + err);
 		}
 		
 	});
 }
 
-// Intercept all mousedown on all body elements
-var wizardmousedownhook = function() {
+// Intercept all mouse/key down on all body elements
+var wizardeventhook = function() {
 	
 	var handlerattached = false;
 
@@ -346,8 +348,8 @@ var wizardmousedownhook = function() {
 	if (bodyevents !== undefined) {
 		// Iterate each attached mousedown event handler
 		$.each(bodyevents.mousedown, function(evtguid, funcobj) {
-		    // Check if wizardmousedownhandler is already attached to element
-			if (funcobj.handler === wizardmousedownhandler) {
+		    // Check if wizardeventhandler is already attached to element
+			if (funcobj.handler === wizardeventhandler) {
 		    	handlerattached = true;
 		    }
 		});
@@ -355,22 +357,22 @@ var wizardmousedownhook = function() {
 		
 	// If the wizard mousedown handler is not already attached, attach it
 	if (handlerattached === false) {
-		$('body').on('mousedown', wizardmousedownhandler);
-		$('body').on('keydown', wizardmousedownhandler);
-		wizlog('Wizard attach mousedown hook bodys:' + $('body').length + ' iframes:' + $('iframe').length);
+		$('body').on('mousedown', wizardeventhandler);
+		$('body').on('keydown', wizardeventhandler);
+		wizlog('Wizard attach event hooks to bodys:' + $('body').length + ' iframes:' + $('iframe').length);
 	}
 	
-	wizardmousedownhookiframes(wizardWin.document);
+	wizardeventhookiframes(wizardWin.document);
 			
 	setTimeout(function() {
-		wizardmousedownhook();
+		wizardeventhook();
 	}, 1000);
 }
 var wizardWin = null;
 if (wizardWin === null) {
 	wizardWin = this;
 }
-wizardmousedownhook();
+wizardeventhook();
 
 /*
  * TODO's
