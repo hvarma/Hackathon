@@ -101,7 +101,7 @@ var wizardflows = $.parseJSON('{' +
          '},{' + 
 	         '"type": "step",' +
 	         '"id": 9,' +
-	         '"title": "Check Associated Integration Service Installations &#8226; Your Recorder Integration Service",' +
+	         '"title": "Check Associated Integration Service Installations </br> &#8226; Your Recorder Integration Service",' +
 	         '"x": 850,' +
 	         '"y": 600,' +
              '"proceed": {"type":"mousedown","target":{"name": "checkedID"}}' +
