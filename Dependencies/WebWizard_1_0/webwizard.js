@@ -269,8 +269,8 @@ wizardclickhookiframes = function(myEle) {
 			
 			// If click handler is not attached to iframe, attach it
 			if (handlerattached === false) {
-				$(iframebody).on('click', wizardclickhandler);
-				console.log('Attached onclick handler to iframe id:' + this.id);
+				$(iframebody).on('mousedown', wizardclickhandler);
+				console.log('Attached onmousedown handler to iframe id:' + this.id);
 			}
 		
 			// Recursivly call to hook into nested iframes 
@@ -321,10 +321,7 @@ wizardclickhook();
 
 /*
  * TODO's
- * 1. Find out why Data Source Settings Screen button click events are not bubbled up to the iframe's body.
- *    a) Try using mouse down attached to body.
- *    b) try using addListener attached to actual button/div.
- *    c) Try assigning onclick = onclick + xxx to actual button/div
+ * 1. Write code for button onmousedown handler to advance wizard on fake button cick.
  * 2. Make the wizard menu and toast more beautiful.
  * 3. Choose a configuration work flow and add to work flow JSON file.
  * 
@@ -334,10 +331,11 @@ wizardclickhook();
  *    This could be used to track useability / common work flows used by verints customers.
  * 
  * Additionally required for productization
- * a. Encapsulate wizard code inside JavaScript object name space.
- * b. Allow toast notification locations be to determined relative to target UI item. 
- * c. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
- * d. Update the code to read the JSON work flow configuration from the host web server. 
- * e. Consider creating a UI for the creation of the JSON work flow configuration.
- * f. Add additional configuration work flows.
+ * a. Consider attaching onmousedown event handler to all body elements instead on onclick
+ * b. Encapsulate wizard code inside JavaScript object name space.
+ * c. Allow toast notification locations be to determined relative to target UI item. 
+ * d. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
+ * e. Update the code to read the JSON work flow configuration from the host web server. 
+ * f. Consider creating a UI for the creation of the JSON work flow configuration.
+ * g. Add additional configuration work flows.
  */
