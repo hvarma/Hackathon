@@ -123,6 +123,7 @@ var wizardtoast = function(wizardstep) {
          background: "#0C99C9",
          border: "2px solid black",
          "border-radius": "10px",
+         "box-shadow": "10px 10px 5px #888888",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
@@ -147,6 +148,7 @@ var wizardflowcomplete = function() {
          background: "#0C99C9",
          border: "2px solid black",
          "border-radius": "10px",
+         "box-shadow": "10px 10px 5px #888888",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
@@ -175,6 +177,7 @@ var wizardmenu = function(x, y, menu) {
          background: "#0C99C9",
          border: "2px solid black",
          "border-radius": "10px",
+         "box-shadow": "10px 10px 5px #888888",
          opacity: 0.90,
          position: "fixed",
          padding: "7px",
@@ -189,6 +192,12 @@ var wizardmenu = function(x, y, menu) {
         // fadeIn Complete
      })    
 }
+
+/*
+  -webkit-box-shadow: 0px 9px 0px rgba(219,31,5,1), 0px 9px 25px rgba(0,0,0,.7);
+    -moz-box-shadow: 0px 9px 0px rgba(219,31,5,1), 0px 9px 25px rgba(0,0,0,.7);
+    box-shadow: 0px 9px 0px rgba(219,31,5,1), 0px 9px 25px rgba(0,0,0,.7);
+ */
 
 // Populate Work flows Steps
 var wizardsteps = [];
