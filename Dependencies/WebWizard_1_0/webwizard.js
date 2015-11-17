@@ -32,7 +32,7 @@
 var wizardflows = $.parseJSON('{' +
          '"workflows": [{' +
              '"type": "menuitem",' +				// Configuration work flow menu item
-             '"title": "Configure Recorder",' +
+             '"title": "Configure Data Source",' +
              '"steps": [{"step":3},{"step":4},{"step":5},{"step":6},{"step":7},{"step":8},{"step":9},{"step":10}]'+		// List of steps in the configuration work flow
          '},{' +
              '"type": "menuitem",' +
