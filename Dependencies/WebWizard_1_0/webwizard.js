@@ -39,7 +39,7 @@ var WEBWIZ = {
          '},{' +
              '"type": "menuitem",' +
              '"title": "Configure Biometrics",' +
-	         '"steps": [{"step":1},{"step":2}]'+
+	         '"steps": [{"step":20},{"step":21}]'+
          '},{' +
              '"type": "menuitem",' +
              '"title": "Configure Archive",' +
@@ -50,14 +50,14 @@ var WEBWIZ = {
 	         '"title": "Select Risk Management Menu",' +
 	         '"x": 100,' +
 	         '"y": 120,' +
-             '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+ // Condition that must be met to proceed to next step in work flow
-         '},{' +
+             '"proceed": {"type":"mousedown","target":{"wizcsspath": "BODY FORM:eq(0) P:eq(0)"}}' + // Condition that must be met to proceed to next step in work flow
+		 '},{' +
 	         '"type": "step",' +
 	         '"id": 2,' +
 	         '"title": "Select Data Source Settings",' +
 	         '"x": 500,' +
 	         '"y": 120,' +
-             '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+
+             '"proceed": {"type":"mousedown","target":{"wizcsspath": "BODY H2:eq(0)"}}'+
 	     '},{' + 
 	         '"type": "step",' +
 	         '"id": 3,' +
@@ -113,7 +113,21 @@ var WEBWIZ = {
 	         '"title": "Select Save",' +
 	         '"x": 1200,' +
 	         '"y": 700,' +
-             '"proceed": {"type":"mousedown","target":{"outerText": "Save"}}'+
+             '"proceed": {"type":"mousedown","target":{"outerText": "Save"}}'+			 
+         '},{' +
+	         '"type": "step",' +			// Single Configuration step within a configuration work flow
+	         '"id": 20,' +
+	         '"title": "Select Risk Management Menu",' +
+	         '"x": 100,' +
+	         '"y": 120,' +
+             '"proceed": {"type":"mousedown","target":{"id": "toast"}}' +
+		 '},{' +
+	         '"type": "step",' +
+	         '"id": 21,' +
+	         '"title": "Select Data Source Settings",' +
+	         '"x": 500,' +
+	         '"y": 120,' +
+             '"proceed": {"type":"mousedown","target":{"id": "toast"}}'+			 
          '}]' + 
 	  '}'),
 
@@ -226,24 +240,46 @@ var WEBWIZ = {
 			var x = ($(window).width() - 284)/2;
 			var y = $(window).height()/2;
 	
-			var recordmenu = 'Start New Recording\nShow Recorded Steps';
+			var recordmenu = '<a id="wizstartrecord" style="color:white;text-decoration:none" href="#" onmousedown="WEBWIZ.wizstartrecording();">Start New Recording</a></br>';
+			recordmenu += '<a id="wizstoprecord" style="color:white;text-decoration:none" href="#" onmousedown="WEBWIZ.wizstoprecording();">Stop Recording</a></br>';
+			recordmenu += '<a id="wizshowrecord" style="color:white;text-decoration:none" href="#" onmousedown="WEBWIZ.wizshowrecording();">Show Recorded Steps</a></br>';
 	
 			WEBWIZ.wizrecordmenu(x, y, recordmenu);
 		
+		// Intercept application mousedown and keydown events
 		} else {
 			
 			if (event.ctrlKey === true) return;
 			
 			WEBWIZ.wizlog(event);
 	
-			// Remove menu if displayed
+			// Remove wizard menus if displayed
 			$('#divwizmenu').remove();
+			$('#divwizrecordmenu').remove();
 			
+			// If Recording, Store event target CSS Path
+			if (WEBWIZ.wizrecordstepidx !== -1 && event.target.id !== 'wizstartrecord' && event.target.id !== 'wizstoprecord' && event.target.id !== 'wizshowrecord') {
+				var proceedCondition =  '"proceed": {"type":' + event.type + '","target":{"wizcsspath": "' + WEBWIZ.getCSSPath(event.target,1) + '"}}';
+				WEBWIZ.wizrecordsteps[WEBWIZ.wizrecordstepidx] = proceedCondition;
+				WEBWIZ.wizlog('Recorded Proceed Condition:' + proceedCondition);			
+				WEBWIZ.wizrecordstepidx++;
+			}
+						
 			// Intercept application mousedown to proceed onto the next wizard step
 			if (WEBWIZ.wizcurrentstep > -1) {
 				
 				var step = WEBWIZ.getwizstep(WEBWIZ.getwizflowstep().step);
-				if (event.type === step.proceed.type) {
+				
+				// Match wizcsspath CSS path
+				if (step.proceed.target.wizcsspath !== undefined) {
+				
+					var cssEle = $(step.proceed.target.wizcsspath);
+					if (event.target == cssEle[0]) {
+						WEBWIZ.wiznextstep();
+					}
+				
+				// Match event type and event property
+				} else if (event.type === step.proceed.type) {
 					
 					// Iterate target variables that need to be matched and check against event target properties
 					// All event target properties must be matched in AND comparison
@@ -261,6 +297,40 @@ var WEBWIZ = {
 				}			
 			}
 		}
+	},
+	
+	// Current recording steps
+	wizrecordsteps: [],
+	wizrecordstepidx: -1,
+	
+	// Start a new Wizard recording
+	wizstartrecording: function() {
+		if (WEBWIZ.wizrecordstepidx !== -1) {
+			alert('Your current recorded steps has been discarded.');
+		}
+		
+		WEBWIZ.wizrecordstepidx = 0;
+	},
+
+	// Stop  Wizard recording
+	wizstoprecording: function() {
+		if (WEBWIZ.wizrecordstepidx === -1) {
+			alert('You are not currently recording.');
+		} else {
+			alert('Recording Stopped.');
+		}
+		
+		WEBWIZ.wizrecordstepidx = -1;
+	},
+	
+	// Show current recording steps
+	wizshowrecording: function() {
+		
+		var recordedConditions = '';
+		for (var idx in WEBWIZ.wizrecordsteps) {
+			recordedConditions += WEBWIZ.wizrecordsteps[idx] + '\n';
+		}
+		alert(recordedConditions);
 	},
 	
 	// Add mouse/key down event listener to all nested iframe document elements
@@ -324,6 +394,60 @@ var WEBWIZ = {
 		if (window.console) {
 			console.log(obj);
 		}
+	},
+	
+	// Return a CSS selector path of the given element
+	//   pathType 1 returns path all the way back up to the <Body> element
+	//   pathType 2 Returns a path all the way back up to the closest element with an id attribute
+	//   pathType 3 Returns a path all the way back up to the closest element with a name attribute
+	// TODO include iframe support
+	getCSSPath: function (ele, pathType) {
+		
+		var foundId = false;
+		var pathAry = new Array();
+		var curJqEle = $(ele);
+				
+		while (curJqEle.prop('tagName') != 'BODY' && foundId !== true) {
+			
+			var tagName = curJqEle.prop("tagName");
+			var selector = null;
+			
+			// Handle returning path back up to the nearest element with an id  or name attribute
+			if (pathType === 2 || pathType === 3) {
+
+				var attr = false;
+				if (pathType === 2) attr = curJqEle.attr('id');
+				else if (pathType === 3) attr = curJqEle.attr('name');
+
+				// For some browsers, `attr` is undefined; for others,`attr` is false, so check for both.
+				if (typeof attr !== typeof undefined && attr !== false) {
+
+					if (pathType === 2) selector = '#' + attr + ' ';
+					else if (pathType === 3) selector = '[name=\'' + attr + '\'] ';
+				    //else if (pathType === 3) selector = tagName + '[name=\'' + attr + '\'] ';
+					foundId = true;	
+				}				
+			}
+			
+			// PathType not requested to use id or id not found
+			if (pathType === 1 || foundId === false) {				
+				// Find index of current element in its parent's tagName collection
+				var index = curJqEle.parent().find(tagName).index(curJqEle);
+				selector = tagName + ':eq(' + index + ') ';				
+			}
+			
+			pathAry.push(selector);
+			curJqEle = curJqEle.parent();
+		}
+		
+		// Compose CSS Path
+		var cssPath = '';
+		if (foundId === false) cssPath = 'BODY ';
+		
+		while (pathAry.length != 0) {
+			cssPath += pathAry.pop();
+		}
+		return cssPath;
 	},
 
 	// Show Wizard configuration Notification
@@ -406,7 +530,7 @@ var WEBWIZ = {
 	// Show Wizard Record menu
     wizrecordmenu: function(x, y, recordmenu) {
 		
-		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divwizmenu'><h3>" + recordmenu + "</h3></div>")
+		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divwizrecordmenu'><h3>" + recordmenu + "</h3></div>")
 		.css({ display: "block",
 			background: "#0C99C9",
 			border: "2px solid black",
@@ -443,13 +567,16 @@ WEBWIZ.initialize(this);
  *    the wizard flows, allowing wizard flows to be created or updated without requiring any coding skills.
  * 
  * Next Steps for Productization
- *   a. Allow toast notification locations be to determined relative to target UI item. 
- *   b. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
- *   c. Consider creating a UI for the creation of the JSON work flow configuration. 
+ *   a. Add iframe support to CSS proceed condition
+ *      i) JQuery access of the iframe content use: $("iframe#mctnt").contents().find("BODY H2:eq(0)")
+ *      ii) Need to add iframe support to getCSSPath(..,4)
+ *   b. Allow toast notification locations be to determined relative to target UI item. 
+ *   c. Implement a more sophisticated proceed algorithm to use a CSS selector expression.
+ *   d. Consider creating a UI for the creation of the JSON work flow configuration. 
  *      i)  This should include CRUD of wizard workflows and steps.
  *      ii) Ability to identify an element to proceed to next step in workflow by simply selecting it.
  *      The two items above will greatly reduce the cost of having to manually code steps and element 
  *      identification that is assoicated with the high cost of developing RAF automation actions.
  *  
- *   d. Update the code to read the JSON work flow configuration from the host web server.
+ *   e. Update the code to read the JSON work flow configuration from the host web server.
  */
