@@ -155,7 +155,7 @@ var WEBWIZ = {
 			// Iterate each attached mousedown event handler
 			$.each(bodyevents.mousedown, function(evtguid, funcobj) {
 				// Check if wizeventhandler is already attached to element
-				if (funcobj.handler === WEBWIZ.wizventhandler) {
+				if (funcobj.handler === WEBWIZ.wizeventhandler) {
 					handlerattached = true;
 				}
 			});
@@ -165,7 +165,7 @@ var WEBWIZ = {
 		if (handlerattached === false) {
 			$('body').on('mousedown', WEBWIZ.wizeventhandler);
 			$('body').on('keydown', WEBWIZ.wizeventhandler);
-			WEBWIZ.wizlog('Wizard attach event hooks to bodys:' + $('body').length + ' iframes:' + $('iframe').length);
+			WEBWIZ.wizlog('Wizard attach event hooks to bodys:' + $('body').length);
 		}
 		
 		WEBWIZ.wizeventhookiframes(WEBWIZ.mainWin.document);
@@ -199,7 +199,7 @@ var WEBWIZ = {
 	wizeventhandler: function(event) {
 		
 		// Display configuration work flow wizard if CTRL key is held during mouse down
-		if (event.ctrlKey === true && event.type === 'mousedown') {
+		if (event.ctrlKey === true && event.shiftKey === false && event.type === 'mousedown') {
 			
 			// Prevent default action of the event from being triggered.
 			event.preventDefault();
@@ -215,7 +215,21 @@ var WEBWIZ = {
 				}
 			}
 			WEBWIZ.wizmenu(x, y , menu);
-				
+		
+		// Display record events wizard menu
+		} else if (event.ctrlKey === true && event.shiftKey === true && event.type === 'mousedown') {
+
+			// Prevent default action of the event from being triggered.
+			event.preventDefault();
+
+			// Custom event handler
+			var x = ($(window).width() - 284)/2;
+			var y = $(window).height()/2;
+	
+			var recordmenu = 'Start New Recording\nShow Recorded Steps';
+	
+			WEBWIZ.wizrecordmenu(x, y, recordmenu);
+		
 		} else {
 			
 			if (event.ctrlKey === true) return;
@@ -387,7 +401,32 @@ var WEBWIZ = {
 		.fadeIn(300, function() {
 			// fadeIn Complete
 		})    
+	},
+	
+	// Show Wizard Record menu
+    wizrecordmenu: function(x, y, recordmenu) {
+		
+		$("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all' id='divwizmenu'><h3>" + recordmenu + "</h3></div>")
+		.css({ display: "block",
+			background: "#0C99C9",
+			border: "2px solid black",
+			"border-radius": "10px",
+			"box-shadow": "10px 10px 5px #888888",
+			opacity: 0.90,
+			position: "fixed",
+			padding: "7px",
+			"text-align": "center",
+			color:"white",
+			width: "270px",
+			left: x,
+			top: y })
+		.appendTo("body")
+		.fadeOut(0)
+		.fadeIn(300, function() {
+			// fadeIn Complete
+		})    
 	}
+	
 	
 }
 
